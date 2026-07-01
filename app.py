@@ -20,8 +20,9 @@ def boot_db():
     if not DB_PATH.exists():
         load_to_db(generate_synthetic_data(50_000))
     return True
-
 boot_db()
+
+st.success("✅ App started successfully")
 
 # ── Global CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -736,11 +737,23 @@ def page_reports():
 # ══════════════════════════════════════════════════════════════════════════════
 #  ROUTER
 # ══════════════════════════════════════════════════════════════════════════════
-if   "Executive" in page: page_executive_summary()
-elif "Overview"  in page: page_overview()
-elif "Analytics" in page: page_analytics()
-elif "Risk"      in page: page_risk()
-elif "AI"        in page: page_ai_insights()
-elif "Policy"    in page: page_policy()
-elif "Reports"   in page: page_reports()
-else:                      page_executive_summary()
+import traceback
+
+try:
+    if "Executive" in page:
+        page_executive_summary()
+    elif "Overview" in page:
+        page_overview()
+    elif "Analytics" in page:
+        page_analytics()
+    elif "Risk" in page:
+        page_risk()
+    elif "AI" in page:
+        page_ai_insights()
+    elif "Policy" in page:
+        page_policy()
+    elif "Report" in page:
+        page_reports()
+except Exception as e:
+    st.exception(e)
+    st.code(traceback.format_exc())

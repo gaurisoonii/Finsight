@@ -24,6 +24,7 @@ boot_db()
 
 st.success("✅ App started successfully")
 
+
 # ── Global CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>

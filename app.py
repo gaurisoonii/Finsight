@@ -1,0 +1,746 @@
+
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import streamlit as st
+
+st.set_page_config(
+    page_title="CCID | RBI Analytics",
+    page_icon="🏛️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# ── DB bootstrap ──────────────────────────────────────────────────────────────
+from modules.cleaner import DB_PATH, generate_synthetic_data, load_to_db
+
+@st.cache_resource(show_spinner="Initialising database …")
+def boot_db():
+    if not DB_PATH.exists():
+        load_to_db(generate_synthetic_data(50_000))
+    return True
+
+boot_db()
+
+# ── Global CSS ────────────────────────────────────────────────────────────────
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap');
+
+html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#FFFCF8;}
+
+[data-testid="stSidebar"]{background:linear-gradient(175deg,#1C1F26 0%,#252932 100%) !important;border-right:1px solid #2E3340;}
+[data-testid="stSidebar"] *{color:#F4F1EA!important;}
+[data-testid="stSidebar"] hr{border-color:#2E3340 !important;margin:12px 0;}
+[data-testid="stSidebar"] .stRadio>div{gap:3px;}
+[data-testid="stSidebar"] .stRadio label{background:transparent;border-radius:8px;padding:9px 14px;font-size:0.87rem;font-weight:400;cursor:pointer;transition:all 0.15s;border:1px solid transparent;color:#E8E4DD !important;}
+[data-testid="stSidebar"] .stRadio label:hover{background:rgba(255,255,255,0.05);color:#FFFDF9 !important;border-color:#3A3F4A;}
+[data-testid="stSidebar"] .stDateInput>div>div{background:#1E222A !important;border-color:#F4F1EA !important;}
+
+.main .block-container{padding-top:28px;}
+
+[data-testid="metric-container"]{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+[data-testid="metric-container"] label{font-size:0.71rem !important;font-weight:600;color:#726E66; !important;letter-spacing:0.08em;text-transform:uppercase;}
+[data-testid="metric-container"] [data-testid="stMetricValue"]{font-size:1.75rem !important;font-weight:700;color:#1C1F26 !important;font-family:'DM Serif Display',serif;}
+[data-testid="stMetricDelta"]{font-size:0.82rem !important;}
+
+.stTabs [data-baseweb="tab-list"]{gap:0;border-bottom:1.5px solid #F2EEE7;background:transparent;}
+.stTabs [data-baseweb="tab"]{background:transparent;border:none;color:#726E66;font-size:0.87rem;font-weight:500;padding:10px 22px;border-radius:0;border-bottom:2px solid transparent;margin-bottom:-1.5px;}
+.stTabs [data-baseweb="tab"][aria-selected="true"]{background:transparent;color:#1C1F26;border-bottom:2px solid #C4913A;font-weight:600;}
+.stTabs [data-baseweb="tab-panel"]{padding-top:20px;}
+
+.page-header{padding:0 0 14px;border-bottom:1px solid #F2EEE7;margin-bottom:24px;}
+.page-header h2{font-size:1.45rem;font-weight:600;#C4913A;margin:0;font-family:'DM Serif Display',serif;letter-spacing:-0.01em;}
+.page-header p{font-size:0.83rem;color:#A07830;margin:4px 0 0;}
+
+.ai-box{background:#FFFEFB;;border:1px solid #EAE0C8;border-left:3px solid #C4913A;border-radius:0 10px 10px 0;padding:14px 18px;font-size:0.88rem;line-height:1.75;color:#2C2820;margin:12px 0 20px;}
+
+.risk-card{border-radius:14px;padding:22px 26px;margin-bottom:18px;border:1px solid;}
+.risk-CRITICAL{background:#FEF5F5;border-color:#EDB8B8;}
+.risk-HIGH    {background:#FFFBF2;border-color:#F0D49A;}
+.risk-MEDIUM  {background:#F4F8FF;border-color:#C3D9F5;}
+.risk-LOW     {background:#F2FCF7;border-color:#A8E4C4;}
+
+.exec-card{background:#FFFEFC;;border:1px solid #F3EFE8;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:box-shadow 0.15s;}
+.exec-card:hover{box-shadow:0 3px 10px rgba(0,0,0,0.08);}
+.exec-card .label{font-size:0.69rem;font-weight:700;color:#726E66;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
+.exec-card .value{font-size:1.05rem;font-weight:600;color:#1C1F26;}
+
+.sev-CRITICAL{background:#FEF0F0;color:#B42B2B;border:1px solid #EDB8B8;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
+.sev-HIGH    {background:#FFF7E6;color:#9A6200;border:1px solid #F0D49A;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
+.sev-MEDIUM  {background:#EEF4FE;color:#1A5FAD;border:1px solid #C3D9F5;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
+.sev-LOW     {background:#EDFAF4;color:#0F7A56;border:1px solid #A8E4C4;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
+
+.rec-card{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:12px;padding:18px 22px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.rec-card h4{font-size:0.92rem;font-weight:600;color:#1C1F26;margin:8px 0 5px;}
+.rec-card p{font-size:0.86rem;color:#4A4640;line-height:1.65;margin:0;}
+
+.stDownloadButton button{background:#1C1F26 !important;color:#F6F4EF !important;border:none !important;font-weight:500 !important;border-radius:8px !important;padding:10px 20px !important;}
+.stDownloadButton button:hover{background:#C4913A !important;}
+.stButton>button[kind="primary"]{background:#1C1F26 !important;color:#F6F4EF !important;border:none !important;border-radius:8px !important;font-weight:500 !important;}
+.stButton>button[kind="primary"]:hover{background:#C4913A !important;}
+.stButton>button:not([kind="primary"]){background:#FFFFFF !important;border:1px solid #E0DDD6 !important;color:#1C1F26 !important;border-radius:8px !important;}
+
+.dim-bar-wrap{margin-bottom:12px;}
+.dim-bar-label{font-size:0.8rem;font-weight:500;color:#2C2820;margin-bottom:5px;display:flex;justify-content:space-between;}
+.dim-bar-track{background:#EAE7E0;border-radius:6px;height:9px;}
+.dim-bar-fill{height:9px;border-radius:6px;}
+
+[data-testid="stDataFrame"]{border:1px solid #F3EFE8;border-radius:10px;overflow:hidden;}
+
+.exec-card:hover,
+.rec-card:hover,
+[data-testid="metric-container"]:hover{
+    background:#FFFFFF;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    transform:translateY(-2px);
+    transition:all .25s ease;
+}
+# 
+# Menu{visibility:hidden;}footer{visibility:hidden;}header{visibility:hidden;}
+[data-testid="stSidebarNav"]{display:none !important;}
+[data-testid="stSidebarNavItems"]{display:none !important;}
+[data-testid="stSidebarNavSeparator"]{display:none !important;}
+[data-testid="stSidebar"] ul{display:none !important;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#FCFAF6;}
+::-webkit-scrollbar-thumb{background:#DDD8D0;border-radius:10px;}
+</style>
+""", unsafe_allow_html=True)
+
+from modules import analytics, charts, ai_engine
+from modules.report_generator import generate_pdf, generate_policy_brief
+import pandas as pd
+from datetime import datetime
+
+# ── Sidebar ───────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("""
+    <div style="padding:4px 0 18px;">
+        <div style="font-size:1.1rem;font-weight:700;color:#C4913A;letter-spacing:0.04em;">🏛 CCID</div>
+        <div style="font-size:0.72rem;color:#BFC6D4;margin-top:3px;">Consumer Complaint Intelligence</div>
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown("<div style='font-size:0.68rem;font-weight:700;color:#CDD3DF;"
+                "letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;'>"
+                "Navigation</div>", unsafe_allow_html=True)
+
+    page = st.radio("", [
+        "🏠  Executive Summary",
+        "📊  Overview",
+        "📈  Analytics",
+        "🎯  Risk Scoring",
+        "🤖  AI Insights",
+        "⚖️  Policy Engine",
+        "📄  Reports",
+    ], label_visibility="collapsed")
+
+    st.markdown("---")
+    st.markdown("<div style='font-size:0.7rem;font-weight:700;color:#A8C0E6;"
+                "letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;'>"
+                "Filters</div>", unsafe_allow_html=True)
+
+    @st.cache_data(ttl=300)
+    def get_filter_options():
+        df = analytics.load_all()
+        return {
+            "categories": sorted(df["category"].dropna().unique().tolist()),
+            "banks":      sorted(df["bank"].dropna().unique().tolist()),
+            "states":     sorted(df["state_india"].dropna().unique().tolist()),
+            "min_date":   df["date_received"].min().date(),
+            "max_date":   df["date_received"].max().date(),
+        }
+
+    opts           = get_filter_options()
+    date_range     = st.date_input("Date range",
+                        value=(opts["min_date"], opts["max_date"]),
+                        min_value=opts["min_date"], max_value=opts["max_date"])
+    sel_categories = st.multiselect("Category", opts["categories"], placeholder="All categories")
+    sel_banks      = st.multiselect("Bank",     opts["banks"],      placeholder="All banks")
+    sel_states     = st.multiselect("State",    opts["states"],     placeholder="All states")
+
+    st.markdown("---")
+    st.markdown("""
+    <div style="font-size:0.72rem;color:#D3D8E2;line-height:2;">
+        <b style="color:#BFC6D4;">Data</b> · CFPB remapped to India<br>
+        <b style="color:#5A6070;">AI</b>   · GPT-4o mini / fallback<br>
+        <b style="color:#5A6070;">Stack</b> · Python · Pandas · Plotly
+    </div>""", unsafe_allow_html=True)
+
+filters = {}
+if sel_categories:             filters["category"]   = sel_categories
+if sel_banks:                  filters["bank"]       = sel_banks
+if sel_states:                 filters["state"]      = sel_states
+if isinstance(date_range,(list,tuple)) and len(date_range)==2:
+    filters["date_range"] = date_range
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+SEV_ICON = {"CRITICAL":"🔴","HIGH":"🟠","MEDIUM":"🟡","LOW":"🟢"}
+GRADE_COLOR = {
+    "CRITICAL":"#A32D2D","HIGH":"#854F0B","MEDIUM":"#185FA5","LOW":"#0F6E56"
+}
+
+def _dim_bar(name, score, raw, color="#0F6E56"):
+    pct = int(score)
+    return f"""
+    <div class="dim-bar-wrap">
+        <div class="dim-bar-label">
+            <span>{name}</span>
+            <span style="color:{color};font-weight:600;">{score:.0f}/100 · {raw}</span>
+        </div>
+        <div class="dim-bar-track">
+            <div class="dim-bar-fill" style="width:{pct}%;background:{color};"></div>
+        </div>
+    </div>"""
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 0 — EXECUTIVE SUMMARY
+# ══════════════════════════════════════════════════════════════════════════════
+def page_executive_summary():
+    st.markdown("""
+    <div class="page-header">
+        <h2>🏠 Executive Summary</h2>
+        <p>One-page situation brief — risk grade, top signals, and priority actions</p>
+    </div>""", unsafe_allow_html=True)
+
+    with st.spinner("Compiling executive summary …"):
+        summary = analytics.executive_summary(filters)
+
+    risk  = summary["risk"]
+    kpi   = summary["kpi"]
+    recs  = summary["recs"]
+    grade = risk["grade"]
+    score = risk["total_score"]
+    gc    = GRADE_COLOR.get(grade, "#1A2B4A")
+
+    st.markdown(f"""
+    <div class="risk-card risk-{grade}">
+        <div style="display:flex;align-items:center;gap:20px;">
+            <div style="text-align:center;min-width:90px;">
+                <div style="font-size:3rem;font-weight:700;color:{gc};line-height:1;">{score:.0f}</div>
+                <div style="font-size:0.72rem;color:{gc};font-weight:600;letter-spacing:0.05em;">/100 RISK SCORE</div>
+            </div>
+            <div style="border-left:2px solid {gc}33;padding-left:20px;flex:1;">
+                <div style="font-size:1.1rem;font-weight:700;color:{gc};margin-bottom:4px;">
+                    {SEV_ICON.get(grade,'')} {grade} RISK — {datetime.now().strftime('%B %Y')}
+                </div>
+                <div style="font-size:0.88rem;color:#3D3D3A;line-height:1.6;">
+                    {risk['interpretation']}
+                </div>
+            </div>
+            <div style="text-align:right;min-width:100px;">
+                <div style="font-size:0.72rem;color:#5F5E5A;font-weight:600;text-transform:uppercase;">Active flags</div>
+                <div style="font-size:2rem;font-weight:700;color:{gc};">{len(recs)}</div>
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
+
+    c1,c2,c3,c4,c5 = st.columns(5)
+    c1.metric("Total complaints",  f"{kpi['total']:,}")
+    c2.metric("Resolution rate",   f"{kpi['resolved_pct']:.1f}%")
+    c3.metric("MoM growth",        f"{kpi['mom_growth']:+.1f}%",
+              delta_color="inverse" if kpi['mom_growth']>0 else "normal")
+    c4.metric("Anomalous weeks",   str(summary["anomaly_weeks"]))
+    c5.metric("Daily average",     f"{kpi['avg_daily']:.0f}")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_l, col_r = st.columns([1.1, 1])
+
+    with col_l:
+        st.markdown("**Top signals**")
+        signals = [
+            ("Highest complaint category", summary["top_category"], "📦"),
+            ("Most complaints from",       summary["top_state"],    "📍"),
+            ("Highest volume bank",        summary["top_bank"],     "🏦"),
+            ("Anomalous weeks detected",   str(summary["anomaly_weeks"]), "⚠️"),
+            ("Policy flags triggered",     str(len(recs)),          "⚖️"),
+            ("Fraud cases detected",       str(risk["fraud_count"]) + " complaints", "🔒"),
+        ]
+        for label, value, icon in signals:
+            st.markdown(f"""
+            <div class="exec-card">
+                <div class="label">{icon} {label}</div>
+                <div class="value">{value}</div>
+            </div>""", unsafe_allow_html=True)
+
+    with col_r:
+        st.markdown("**Risk dimensions**")
+        for d in risk["dimensions"]:
+            s = d["score"]
+            if   s >= 75: dc = "#A32D2D"
+            elif s >= 55: dc = "#BA7517"
+            elif s >= 35: dc = "#185FA5"
+            else:         dc = "#0F6E56"
+            st.markdown(_dim_bar(d["name"], s, d["raw"], dc), unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.plotly_chart(charts.risk_radar(risk["dimensions"]),
+                        use_container_width=True, config={"displayModeBar":False})
+
+    if recs:
+        st.markdown("---")
+        st.markdown("**Priority action items**")
+        for rec in recs[:3]:
+            st.markdown(f"""
+            <div class="rec-card">
+                <span class="sev-{rec['severity']}">{rec['severity']}</span>
+                <h4>{SEV_ICON.get(rec['severity'],'')} {rec['category']}
+                    <span style="font-size:0.8rem;color:#A32D2D;font-weight:500;">
+                    &nbsp;{rec['growth_pct']:+.1f}% MoM</span>
+                </h4>
+                <p>{rec['recommendation']}</p>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    trend_df  = analytics.monthly_trend(filters)
+    narrative = ai_engine.trend_narrative(trend_df, kpi)
+    if narrative:
+        st.markdown(f'<div class="ai-box">🤖 {narrative}</div>', unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 1 — OVERVIEW
+# ══════════════════════════════════════════════════════════════════════════════
+def page_overview():
+    st.markdown("""
+    <div class="page-header">
+        <h2>📊 Overview</h2>
+        <p>High-level complaint intelligence — volume, trends, and geographic distribution</p>
+    </div>""", unsafe_allow_html=True)
+
+    with st.spinner("Loading …"):
+        kpi_data = analytics.kpis(filters)
+
+    c1,c2,c3,c4 = st.columns(4)
+    c1.metric("Total complaints", f"{kpi_data['total']:,}")
+    c2.metric("Resolution rate",  f"{kpi_data['resolved_pct']:.1f}%")
+    c3.metric("Month-on-month",   f"{kpi_data['mom_growth']:+.1f}%",
+              delta_color="inverse" if kpi_data['mom_growth']>0 else "normal")
+    c4.metric("Daily average",    f"{kpi_data['avg_daily']:.0f}")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    trend_df  = analytics.monthly_trend(filters)
+    narrative = ai_engine.trend_narrative(trend_df, kpi_data)
+    if narrative:
+        st.markdown(f'<div class="ai-box">🤖 {narrative}</div>', unsafe_allow_html=True)
+
+    st.plotly_chart(charts.monthly_trend_chart(trend_df),
+                    use_container_width=True, config={"displayModeBar":False})
+
+    col_l,col_r = st.columns([1.4,1])
+    with col_l:
+        state_df = analytics.state_breakdown(filters)
+        st.plotly_chart(charts.india_heatmap(state_df),
+                        use_container_width=True, config={"displayModeBar":False})
+    with col_r:
+        cat_df = analytics.category_breakdown(filters)
+        st.plotly_chart(charts.category_bar(cat_df),
+                        use_container_width=True, config={"displayModeBar":False})
+
+    st.markdown("---")
+    st.markdown("**Top 5 states**")
+    d = state_df.head(5).rename(
+    columns={
+        "state_india": "State",
+        "count": "Complaints"
+    }
+)
+
+# Convert numbers to text so Streamlit left-aligns them
+    d["Complaints"] = d["Complaints"].map(lambda x: f"{x:,}")
+
+    st.dataframe(
+        d,
+        use_container_width=True,
+        hide_index=True
+    )
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 2 — ANALYTICS
+# ══════════════════════════════════════════════════════════════════════════════
+def page_analytics():
+    st.markdown("""
+    <div class="page-header">
+        <h2>📈 Analytics</h2>
+        <p>Category trends, bank performance, and anomaly detection</p>
+    </div>""", unsafe_allow_html=True)
+
+    tab1,tab2,tab3 = st.tabs(["Category trends","Bank analysis","Anomaly detection"])
+
+    with tab1:
+        cat_trend = analytics.category_trend(filters)
+        if cat_trend.empty:
+            st.info("No data for selected filters.")
+        else:
+            st.plotly_chart(charts.category_trend_area(cat_trend),
+                            use_container_width=True, config={"displayModeBar":False})
+            cat_anom = analytics.category_anomalies(filters)
+            if not cat_anom.empty:
+                st.markdown("**Month-over-month change**")
+                d = cat_anom.copy()
+                d["mom_pct_change"] = d["mom_pct_change"].apply(lambda x: f"{x:+.1f}%")
+                d["spiked"]         = d["spiked"].apply(lambda x: "⚠️ Spike" if x else "✓ Normal")
+                d.columns = ["Category","MoM Change","Status"]
+                st.dataframe(d, use_container_width=True, hide_index=True)
+
+    with tab2:
+        bank_df = analytics.bank_breakdown(filters)
+        st.plotly_chart(charts.bank_bar(bank_df),
+                        use_container_width=True, config={"displayModeBar":False})
+        d = bank_df.copy()
+        d["resolution_rate"] = d["resolution_rate"].apply(lambda x: f"{x:.1f}%")
+        d.columns = ["Bank","Total","Resolved","Resolution rate"]
+        st.dataframe(d, use_container_width=True, hide_index=True)
+
+    with tab3:
+        st.markdown("""<p style="font-size:0.85rem;color:#5F5E5A;">
+            Anomalies flagged when weekly volume deviates &gt;2σ from 4-week rolling mean.</p>""",
+            unsafe_allow_html=True)
+        anomaly_df = analytics.detect_anomalies(filters)
+        st.plotly_chart(charts.anomaly_chart(anomaly_df),
+                        use_container_width=True, config={"displayModeBar":False})
+        if anomaly_df["is_anomaly"].any():
+            flagged = anomaly_df[anomaly_df["is_anomaly"]][["week","count","z_score"]]
+            flagged.columns = ["Week","Complaints","Z-score"]
+            st.markdown("**⚠️ Flagged weeks**")
+            st.dataframe(flagged, use_container_width=True, hide_index=True)
+        else:
+            st.success("No anomalies detected.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 3 — RISK SCORING
+# ══════════════════════════════════════════════════════════════════════════════
+def page_risk():
+    st.markdown("""
+    <div class="page-header">
+        <h2>🎯 Risk Scoring</h2>
+        <p>Composite 0–100 risk score across 5 weighted dimensions — updated from live data</p>
+    </div>""", unsafe_allow_html=True)
+
+    with st.spinner("Computing risk score …"):
+        risk = analytics.risk_score(filters)
+
+    grade = risk["grade"]
+    score = risk["total_score"]
+    gc    = GRADE_COLOR.get(grade, "#1A2B4A")
+
+    col_g, col_c, col_d = st.columns([1, 1, 1.2])
+
+    with col_g:
+        st.plotly_chart(charts.risk_gauge(score, grade),
+                        use_container_width=True, config={"displayModeBar":False})
+
+    with col_c:
+        st.markdown(f"""
+        <div class="risk-card risk-{grade}" style="height:220px;display:flex;
+             flex-direction:column;justify-content:center;">
+            <div style="font-size:0.72rem;font-weight:700;color:{gc};
+                 letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Risk grade</div>
+            <div style="font-size:2.8rem;font-weight:700;color:{gc};line-height:1;">
+                {SEV_ICON.get(grade,'')} {grade}
+            </div>
+            <div style="font-size:0.88rem;color:#3D3D3A;margin-top:10px;line-height:1.6;">
+                {risk['interpretation']}
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+    with col_d:
+        st.plotly_chart(charts.risk_radar(risk["dimensions"]),
+                        use_container_width=True, config={"displayModeBar":False})
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("**Dimension breakdown**")
+    st.markdown("""<p style="font-size:0.83rem;color:#5F5E5A;margin-bottom:14px;">
+    Each dimension is scored 0–100 and weighted to produce the composite score.
+    Higher = higher risk.</p>""", unsafe_allow_html=True)
+
+    for d in risk["dimensions"]:
+        s = d["score"]
+        if   s>=75: dc="#A32D2D"
+        elif s>=55: dc="#BA7517"
+        elif s>=35: dc="#185FA5"
+        else:       dc="#0F6E56"
+        col_a, col_b = st.columns([3,1])
+        with col_a:
+            st.markdown(_dim_bar(d["name"], s, d["raw"], dc), unsafe_allow_html=True)
+        with col_b:
+            st.markdown(f"""
+            <div style="text-align:right;padding-top:4px;">
+                <span style="font-size:0.75rem;color:#5F5E5A;">Weight: <b>{d['weight']}</b></span>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    with st.expander("📐 Scoring methodology"):
+        st.markdown("""
+| Dimension | Weight | How it's computed |
+|-----------|--------|-------------------|
+| Volume growth | 30% | MoM overall complaint growth — 0% = score 0, ≥50% = score 100 |
+| Fraud exposure | 25% | Fraud complaints as % of total — 0% = 0, ≥20% = 100 |
+| Unresolved rate | 20% | 100 minus resolution rate |
+| Category spikes | 15% | Number of spiked categories — 0 spikes = 0, ≥5 = 100 |
+| Volume anomalies | 10% | Anomalous weeks via z-score — 0 = 0, ≥10 = 100 |
+
+**Grade thresholds:** LOW (<35) · MEDIUM (35–55) · HIGH (55–75) · CRITICAL (≥75)
+        """)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 4 — AI INSIGHTS
+# ══════════════════════════════════════════════════════════════════════════════
+def page_ai_insights():
+    st.markdown("""
+    <div class="page-header">
+        <h2>🤖 AI Insights</h2>
+        <p>GPT-4o powered complaint narrative analysis — patterns, pain points, systemic signals</p>
+    </div>""", unsafe_allow_html=True)
+
+    cat_df = analytics.category_breakdown(filters)
+    if cat_df.empty:
+        st.warning("No complaint data for selected filters.")
+        return
+
+    col_sel,col_info = st.columns([1,2])
+    with col_sel:
+        selected_cat = st.selectbox("Complaint category", cat_df["category"].tolist())
+        n_complaints = int(cat_df[cat_df["category"]==selected_cat]["count"].iloc[0])
+        st.caption(f"{n_complaints:,} complaints in this category")
+
+    with col_info:
+        st.markdown(f"""
+        <div style="background:#F0FAF6;border-radius:8px;padding:14px 18px;margin-top:4px;">
+            <div style="font-size:0.75rem;color:#5F5E5A;text-transform:uppercase;
+                 font-weight:600;letter-spacing:0.05em;">Selected</div>
+            <div style="font-size:1.35rem;font-weight:600;color:#1A2B4A;margin-top:4px;">
+                {selected_cat}</div>
+            <div style="font-size:0.83rem;color:#0F6E56;margin-top:2px;">
+                Narratives will be analysed by GPT-4o</div>
+        </div>""", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("Generate AI Analysis", type="primary"):
+        with st.spinner("Generating analysis …"):
+            narratives = analytics.narrative_sample(selected_cat, n=20, filters=filters)
+            summary    = ai_engine.summarise_complaints(narratives, selected_cat)
+        st.markdown(f'<div class="ai-box">🤖 {summary}</div>', unsafe_allow_html=True)
+        with st.expander(f"Raw narrative samples ({min(5,len(narratives))})"):
+            for i,text in enumerate(narratives[:5],1):
+                st.markdown(f"""
+                <div style="background:#FAFAF8;border:0.5px solid #D3D1C7;border-radius:8px;
+                    padding:12px 16px;margin-bottom:10px;font-size:0.86rem;
+                    color:#3D3D3A;line-height:1.65;">
+                    <span style="font-size:0.74rem;font-weight:600;color:#5F5E5A;">#{i}</span><br>
+                    {str(text)[:600]}{'…' if len(str(text))>600 else ''}
+                </div>""", unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="text-align:center;padding:48px 20px;color:#8A8980;font-size:0.9rem;
+             border:1px dashed #D3D1C7;border-radius:10px;margin-top:8px;">
+            Select a category and click <strong>Generate AI Analysis</strong>
+        </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.plotly_chart(charts.category_bar(cat_df),
+                    use_container_width=True, config={"displayModeBar":False})
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 5 — POLICY ENGINE
+# ══════════════════════════════════════════════════════════════════════════════
+def page_policy():
+    st.markdown("""
+    <div class="page-header">
+        <h2>⚖️ Policy Engine</h2>
+        <p>Rule-based + AI hybrid regulatory recommendations with severity scoring</p>
+    </div>""", unsafe_allow_html=True)
+
+    with st.spinner("Running policy engine …"):
+        recs = analytics.policy_recommendations(filters)
+        risk = analytics.risk_score(filters)
+
+    critical = sum(1 for r in recs if r["severity"]=="CRITICAL")
+    high     = sum(1 for r in recs if r["severity"]=="HIGH")
+    medium   = sum(1 for r in recs if r["severity"]=="MEDIUM")
+
+    c1,c2,c3,c4 = st.columns(4)
+    c1.metric("🔴 Critical",    critical)
+    c2.metric("🟠 High",        high)
+    c3.metric("🟡 Medium",      medium)
+    c4.metric("🎯 Risk score",  f"{risk['total_score']:.0f}/100")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if not recs:
+        st.success("✅ No significant spikes. All categories within normal range.")
+        st.markdown("---")
+        _show_all_category_growth()
+        return
+
+    with st.spinner("Generating policy insight …"):
+        insight = ai_engine.generate_policy_insight(recs)
+
+    st.markdown(f'<div class="ai-box">🤖 {insight}</div>', unsafe_allow_html=True)
+
+    col_chart,col_recs = st.columns([1,2])
+    with col_chart:
+        st.plotly_chart(charts.severity_donut(recs),
+                        use_container_width=True, config={"displayModeBar":False})
+    with col_recs:
+        for rec in recs:
+            st.markdown(f"""
+            <div class="rec-card">
+                <span class="sev-{rec['severity']}">{rec['severity']}</span>
+                <h4>{SEV_ICON.get(rec['severity'],'')} {rec['category']}
+                    <span style="font-size:0.8rem;color:#A32D2D;font-weight:500;">
+                    &nbsp;{rec['growth_pct']:+.1f}% MoM</span>
+                </h4>
+                <p>{rec['recommendation']}</p>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    _show_all_category_growth()
+
+
+def _show_all_category_growth():
+    cat_anom = analytics.category_anomalies(filters)
+    if not cat_anom.empty:
+        st.markdown("**All category growth rates**")
+        d = cat_anom.copy()
+        d["mom_pct_change"] = d["mom_pct_change"].apply(lambda x: f"{x:+.1f}%")
+        d["spiked"]         = d["spiked"].apply(lambda x: "⚠️ Spike" if x else "—")
+        d.columns = ["Category","MoM Growth","Alert"]
+        st.dataframe(d, use_container_width=True, hide_index=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  PAGE 6 — REPORTS
+# ══════════════════════════════════════════════════════════════════════════════
+def page_reports():
+    st.markdown("""
+    <div class="page-header">
+        <h2>📄 Reports</h2>
+        <p>Generate and download official-style PDF reports for RBI internal use</p>
+    </div>""", unsafe_allow_html=True)
+
+    tab_full, tab_brief = st.tabs(["📋  Full Monthly Report", "📝  Policy Brief"])
+
+    with tab_full:
+        col_l,col_r = st.columns([1,2])
+        with col_l:
+            st.markdown("**Configuration**")
+            report_month   = st.text_input("Reporting period",
+                                value=datetime.now().strftime("%B %Y"), key="full_month")
+            include_ai     = st.checkbox("Include AI narrative",   value=True, key="full_ai")
+            include_policy = st.checkbox("Include policy section", value=True, key="full_pol")
+        with col_r:
+            st.markdown("""
+            <div style="background:#F8F7F2;border:0.5px solid #D3D1C7;
+                 border-radius:10px;padding:18px 22px;">
+                <div style="font-size:0.85rem;font-weight:600;color:#1A2B4A;margin-bottom:10px;">
+                    Full report includes</div>
+                <ul style="font-size:0.85rem;color:#3D3D3A;line-height:2.1;
+                    padding-left:18px;margin:0;">
+                    <li>Executive summary KPI table</li>
+                    <li>Category breakdown (top 10)</li>
+                    <li>Institution analysis (top 10)</li>
+                    <li>AI trend narrative</li>
+                    <li>Policy recommendations</li>
+                    <li>RBI confidentiality footer</li>
+                </ul>
+            </div>""", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("⬇️  Generate Full Report", type="primary", key="gen_full"):
+            with st.spinner("Compiling …"):
+                kpi_data = analytics.kpis(filters)
+                cat_df   = analytics.category_breakdown(filters)
+                bank_df  = analytics.bank_breakdown(filters)
+                trend_df = analytics.monthly_trend(filters)
+                recs     = analytics.policy_recommendations(filters) if include_policy else []
+                insight  = ai_engine.generate_policy_insight(recs)  if include_policy else ""
+                ai_sum   = ai_engine.trend_narrative(trend_df, kpi_data) if include_ai else ""
+                pdf = generate_pdf(kpis=kpi_data, cat_df=cat_df, bank_df=bank_df,
+                                   recommendations=recs, policy_insight=insight,
+                                   ai_summary=ai_sum, report_month=report_month)
+            if pdf and not pdf.startswith(b"["):
+                st.success("✅ Full report ready!")
+                st.download_button("📥 Download PDF", data=pdf,
+                    file_name=f"CCID_Report_{report_month.replace(' ','_')}.pdf",
+                    mime="application/pdf")
+            else:
+                st.error(pdf.decode() if pdf else "Failed.")
+
+    with tab_brief:
+        col_l,col_r = st.columns([1,2])
+        with col_l:
+            st.markdown("**Configuration**")
+            brief_month = st.text_input("Reporting period",
+                             value=datetime.now().strftime("%B %Y"), key="brief_month")
+        with col_r:
+            st.markdown("""
+            <div style="background:#F0FAF6;border:0.5px solid #9FE1CB;
+                 border-radius:10px;padding:18px 22px;">
+                <div style="font-size:0.85rem;font-weight:600;color:#1A2B4A;margin-bottom:10px;">
+                    Policy Brief includes (2 pages)</div>
+                <ul style="font-size:0.85rem;color:#3D3D3A;line-height:2.1;
+                    padding-left:18px;margin:0;">
+                    <li>Composite risk score (0–100) with grade</li>
+                    <li>5-dimension risk breakdown table</li>
+                    <li>Key KPI summary strip</li>
+                    <li>AI regulatory intelligence assessment</li>
+                    <li>Numbered action items by severity</li>
+                    <li>Sign-off block for circulation</li>
+                </ul>
+            </div>""", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("⬇️  Generate Policy Brief", type="primary", key="gen_brief"):
+            with st.spinner("Compiling policy brief …"):
+                risk    = analytics.risk_score(filters)
+                kpi_d   = analytics.kpis(filters)
+                recs    = analytics.policy_recommendations(filters)
+                insight = ai_engine.generate_policy_insight(recs)
+                pdf = generate_policy_brief(risk=risk, recommendations=recs,
+                                            policy_insight=insight, kpis=kpi_d,
+                                            report_month=brief_month)
+            if pdf and not pdf.startswith(b"["):
+                st.success("✅ Policy brief ready!")
+                st.download_button("📥 Download Policy Brief", data=pdf,
+                    file_name=f"CCID_PolicyBrief_{brief_month.replace(' ','_')}.pdf",
+                    mime="application/pdf")
+            else:
+                st.error(pdf.decode() if pdf else "Failed.")
+
+        st.markdown("---")
+        st.markdown("**Live preview**")
+        with st.expander("Risk score preview"):
+            risk = analytics.risk_score(filters)
+            c1,c2 = st.columns(2)
+            c1.metric("Risk score", f"{risk['total_score']:.0f}/100")
+            c2.metric("Grade",      risk["grade"])
+            for d in risk["dimensions"]:
+                st.markdown(_dim_bar(d["name"], d["score"], d["raw"]), unsafe_allow_html=True)
+        with st.expander("Active flags preview"):
+            recs = analytics.policy_recommendations(filters)
+            if recs:
+                for r in recs:
+                    st.markdown(f"**{r['severity']}** — {r['category']} "
+                                f"({r['growth_pct']:+.1f}%): {r['recommendation']}")
+            else:
+                st.write("No active flags.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  ROUTER
+# ══════════════════════════════════════════════════════════════════════════════
+if   "Executive" in page: page_executive_summary()
+elif "Overview"  in page: page_overview()
+elif "Analytics" in page: page_analytics()
+elif "Risk"      in page: page_risk()
+elif "AI"        in page: page_ai_insights()
+elif "Policy"    in page: page_policy()
+elif "Reports"   in page: page_reports()
+else:                      page_executive_summary()

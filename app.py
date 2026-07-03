@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import streamlit as st
 
 st.set_page_config(
-    page_title="CCID | RBI Analytics",
+    page_title="FinSight",
     page_icon="🏛️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -22,12 +22,45 @@ def boot_db():
     return True
 boot_db()
 
-st.success("✅ App started successfully")
-
 
 # ── Global CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
-<style>
+            /* ================= PAGE INTRO ================= */
+
+    .page-intro{
+        background:linear-gradient(135deg,#FFFDF9 0%,#F8F4EB 100%);
+        border:1px solid #E6D7B4;
+        border-left:5px solid #C4913A;
+        border-radius:14px;
+        padding:18px 22px;
+        margin:0 0 22px 0;
+        box-shadow:0 4px 14px rgba(0,0,0,.05);
+    }
+
+    .page-intro h4{
+        margin:0 0 10px 0;
+        font-size:1rem;
+        color:#1C1F26;
+        font-weight:700;
+    }
+
+    .page-intro p{
+        margin:0;
+        font-size:0.88rem;
+        line-height:1.8;
+        color:#4E4A44;
+    }
+
+    .page-intro ul{
+        margin-top:10px;
+        padding-left:18px;
+    }
+
+    .page-intro li{
+        margin-bottom:5px;
+        color:#5A5550;
+    }
+    <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap');
 
 html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#FFFCF8;}
@@ -119,24 +152,40 @@ from datetime import datetime
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style="padding:4px 0 18px;">
-        <div style="font-size:1.1rem;font-weight:700;color:#C4913A;letter-spacing:0.04em;">🏛 CCID</div>
-        <div style="font-size:0.72rem;color:#BFC6D4;margin-top:3px;">Consumer Complaint Intelligence</div>
-    </div>""", unsafe_allow_html=True)
+    <div style="padding-bottom:18px;">
+        <div style="font-size:1.55rem;
+                    font-weight:700;
+                    color:#C4913A;">
+            🏛 FinSight
+        </div>
 
+        <div style="font-size:.78rem;
+                    color:#D7DCE6;
+                    line-height:1.5;
+                    margin-top:6px;">
+            AI-Driven Financial Complaint<br>
+            Intelligence Platform
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.markdown("<div style='font-size:0.68rem;font-weight:700;color:#CDD3DF;"
                 "letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;'>"
                 "Navigation</div>", unsafe_allow_html=True)
 
-    page = st.radio("", [
-        "🏠  Executive Summary",
-        "📊  Overview",
-        "📈  Analytics",
-        "🎯  Risk Scoring",
-        "🤖  AI Insights",
-        "⚖️  Policy Engine",
-        "📄  Reports",
-    ], label_visibility="collapsed")
+    page = st.radio(
+    "",
+    [
+        "🏠 Executive Summary",
+        "📊 Complaint Overview",
+        "📈 Complaint Analytics",
+        "🎯 Risk Assessment",
+        "🤖 AI Complaint Intelligence",
+        "⚖ Policy Recommendations",
+        "📄 Reports"
+    ],
+    label_visibility="collapsed"
+)
 
     st.markdown("---")
     st.markdown("<div style='font-size:0.7rem;font-weight:700;color:#A8C0E6;"
@@ -205,8 +254,13 @@ def page_executive_summary():
     st.markdown("""
     <div class="page-header">
         <h2>🏠 Executive Summary</h2>
-        <p>One-page situation brief — risk grade, top signals, and priority actions</p>
-    </div>""", unsafe_allow_html=True)
+        <p>
+            This page provides a consolidated view of the current complaint landscape,
+            highlighting key performance indicators, overall risk exposure, and the
+            most critical issues requiring immediate regulatory attention.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.spinner("Compiling executive summary …"):
         summary = analytics.executive_summary(filters)
@@ -309,9 +363,14 @@ def page_executive_summary():
 def page_overview():
     st.markdown("""
     <div class="page-header">
-        <h2>📊 Overview</h2>
-        <p>High-level complaint intelligence — volume, trends, and geographic distribution</p>
-    </div>""", unsafe_allow_html=True)
+        <h2>📊 Complaint Overview</h2>
+        <p>
+            Explore complaint volumes across time, geography, and product categories.
+            This page helps identify overall trends, regional hotspots, and customer
+            service patterns within the financial ecosystem.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.spinner("Loading …"):
         kpi_data = analytics.kpis(filters)
@@ -366,9 +425,14 @@ def page_overview():
 def page_analytics():
     st.markdown("""
     <div class="page-header">
-        <h2>📈 Analytics</h2>
-        <p>Category trends, bank performance, and anomaly detection</p>
-    </div>""", unsafe_allow_html=True)
+        <h2>📈 Complaint Analytics</h2>
+        <p>
+            Perform detailed analysis of complaint behaviour across banks and
+            complaint categories. Statistical methods are used to detect unusual
+            growth patterns and emerging operational concerns.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     tab1,tab2,tab3 = st.tabs(["Category trends","Bank analysis","Anomaly detection"])
 
@@ -419,9 +483,14 @@ def page_analytics():
 def page_risk():
     st.markdown("""
     <div class="page-header">
-        <h2>🎯 Risk Scoring</h2>
-        <p>Composite 0–100 risk score across 5 weighted dimensions — updated from live data</p>
-    </div>""", unsafe_allow_html=True)
+        <h2>🎯 Risk Assessment</h2>
+        <p>
+            The composite risk score combines complaint growth, fraud exposure,
+            unresolved cases, category spikes, and anomaly detection to estimate
+            the overall regulatory risk level.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.spinner("Computing risk score …"):
         risk = analytics.risk_score(filters)
@@ -496,9 +565,14 @@ def page_risk():
 def page_ai_insights():
     st.markdown("""
     <div class="page-header">
-        <h2>🤖 AI Insights</h2>
-        <p>GPT-4o powered complaint narrative analysis — patterns, pain points, systemic signals</p>
-    </div>""", unsafe_allow_html=True)
+        <h2>🤖 AI Complaint Intelligence</h2>
+        <p>
+            AI analyses customer complaint narratives to identify recurring issues,
+            emerging risks, operational bottlenecks, and customer pain points that
+            may require supervisory or policy intervention.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     cat_df = analytics.category_breakdown(filters)
     if cat_df.empty:
@@ -555,9 +629,14 @@ def page_ai_insights():
 def page_policy():
     st.markdown("""
     <div class="page-header">
-        <h2>⚖️ Policy Engine</h2>
-        <p>Rule-based + AI hybrid regulatory recommendations with severity scoring</p>
-    </div>""", unsafe_allow_html=True)
+        <h2>⚖ Policy Recommendation Engine</h2>
+        <p>
+            Rule-based analytics and AI-generated insights work together to prioritise
+            complaint categories based on severity and recommend potential regulatory
+            or operational actions.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.spinner("Running policy engine …"):
         recs = analytics.policy_recommendations(filters)
@@ -624,8 +703,13 @@ def page_reports():
     st.markdown("""
     <div class="page-header">
         <h2>📄 Reports</h2>
-        <p>Generate and download official-style PDF reports for RBI internal use</p>
-    </div>""", unsafe_allow_html=True)
+        <p>
+            Generate RBI-style reports and policy briefs summarising complaint
+            analytics, risk assessment, AI observations, and recommended actions
+            for internal review and decision-making.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     tab_full, tab_brief = st.tabs(["📋  Full Monthly Report", "📝  Policy Brief"])
 

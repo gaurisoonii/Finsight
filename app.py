@@ -25,122 +25,234 @@ boot_db()
 # ── Global CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ================= PAGE INTRO ================= */
-
-.page-intro{
-    background:linear-gradient(135deg,#FFFDF9 0%,#F8F4EB 100%);
-    border:1px solid #E6D7B4;
-    border-left:5px solid #C4913A;
-    border-radius:14px;
-    padding:18px 22px;
-    margin:0 0 22px 0;
-    box-shadow:0 4px 14px rgba(0,0,0,.05);
+:root{
+    --bg:#FAFBFC;
+    --surface:#FFFFFF;
+    --ink:#111827;
+    --text:#1F2937;
+    --soft:#243B53;
+    --line:#D8DEE8;
+    --brand:#0F766E;
+    --brand-dark:#0B4F4A;
+    --accent:#2563EB;
+    --danger:#B42318;
+    --warn:#B45309;
+    --ok:#047857;
 }
 
-.page-intro h4{
-    margin:0 0 10px 0;
-    font-size:1rem;
-    color:#1C1F26;
+html,body,[class*="css"]{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+.main .block-container{
+    padding-top:26px;
+    max-width:1180px;
+}
+
+h1,h2,h3,h4,h5,h6,p,span,div,label{
+    color:var(--text);
+}
+
+.page-header{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:5px solid var(--brand);
+    border-radius:10px;
+    padding:18px 22px;
+    margin-bottom:22px;
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+}
+
+.page-header h2{
+    margin:0 0 8px 0;
+    font-size:1.45rem;
+    font-weight:800;
+    color:var(--ink);
+}
+
+.page-header p{
+    margin:0;
+    font-size:.95rem;
+    line-height:1.65;
+    color:#1F2937;
+    font-weight:500;
+}
+
+[data-testid="stSidebar"]{
+    background:#FFFFFF !important;
+    border-right:1px solid var(--line);
+}
+
+[data-testid="stSidebar"] *{
+    color:var(--ink) !important;
+}
+
+[data-testid="stSidebar"] .stRadio label{
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:4px;
+    border:1px solid transparent;
+    font-weight:600;
+}
+
+[data-testid="stSidebar"] .stRadio label:hover{
+    background:#ECFDF5;
+    border-color:#99F6E4;
+}
+
+[data-testid="metric-container"]{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:15px 18px;
+    box-shadow:0 1px 5px rgba(15,23,42,.06);
+}
+
+[data-testid="metric-container"] label{
+    color:#1F2937 !important;
+    font-size:.76rem !important;
+    font-weight:800 !important;
+    text-transform:uppercase;
+}
+
+[data-testid="metric-container"] [data-testid="stMetricValue"]{
+    color:var(--ink) !important;
+    font-size:1.65rem !important;
+    font-weight:800 !important;
+}
+
+.exec-card,.rec-card,.ai-box{
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:12px;
+    box-shadow:0 1px 6px rgba(15,23,42,.06);
+}
+
+.exec-card .label{
+    color:#1F2937;
+    font-size:.75rem;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.exec-card .value{
+    color:var(--ink);
+    font-size:1.05rem;
     font-weight:700;
 }
 
-.page-intro p{
-    margin:0;
-    font-size:0.88rem;
-    line-height:1.8;
-    color:#4E4A44;
+.ai-box{
+    border-left:5px solid var(--accent);
+    color:#1F2937;
+    line-height:1.7;
+    font-weight:500;
 }
 
-.page-intro ul{
-    margin-top:10px;
-    padding-left:18px;
+.rec-card h4{
+    color:var(--ink);
+    margin:10px 0 6px;
+    font-size:1rem;
 }
 
-.page-intro li{
-    margin-bottom:5px;
-    color:#5A5550;
+.rec-card p{
+    color:#1F2937;
+    line-height:1.65;
+    font-weight:500;
 }
 
-html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif;background:#FFFCF8;}
-
-[data-testid="stSidebar"]{background:linear-gradient(175deg,#1C1F26 0%,#252932 100%) !important;border-right:1px solid #2E3340;}
-[data-testid="stSidebar"] *{color:#F4F1EA!important;}
-[data-testid="stSidebar"] hr{border-color:#2E3340 !important;margin:12px 0;}
-[data-testid="stSidebar"] .stRadio>div{gap:3px;}
-[data-testid="stSidebar"] .stRadio label{background:transparent;border-radius:8px;padding:9px 14px;font-size:0.87rem;font-weight:400;cursor:pointer;transition:all 0.15s;border:1px solid transparent;color:#E8E4DD !important;}
-[data-testid="stSidebar"] .stRadio label:hover{background:rgba(255,255,255,0.05);color:#FFFDF9 !important;border-color:#3A3F4A;}
-[data-testid="stSidebar"] .stDateInput>div>div{background:#1E222A !important;border-color:#F4F1EA !important;}
-
-.main .block-container{padding-top:28px;}
-
-[data-testid="metric-container"]{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-[data-testid="metric-container"] label{font-size:0.71rem !important;font-weight:600;color:#726E66 !important;letter-spacing:0.08em;text-transform:uppercase;}
-[data-testid="metric-container"] [data-testid="stMetricValue"]{font-size:1.75rem !important;font-weight:700;color:#1C1F26 !important;font-family:'DM Serif Display',serif;}
-[data-testid="stMetricDelta"]{font-size:0.82rem !important;}
-
-.stTabs [data-baseweb="tab-list"]{gap:0;border-bottom:1.5px solid #F2EEE7;background:transparent;}
-.stTabs [data-baseweb="tab"]{background:transparent;border:none;color:#726E66;font-size:0.87rem;font-weight:500;padding:10px 22px;border-radius:0;border-bottom:2px solid transparent;margin-bottom:-1.5px;}
-.stTabs [data-baseweb="tab"][aria-selected="true"]{background:transparent;color:#1C1F26;border-bottom:2px solid #C4913A;font-weight:600;}
-.stTabs [data-baseweb="tab-panel"]{padding-top:20px;}
-
-.page-header{padding:0 0 14px;border-bottom:1px solid #F2EEE7;margin-bottom:24px;}
-.page-header h2{font-size:1.45rem;font-weight:600;color:#C4913A;margin:0;font-family:'DM Serif Display',serif;letter-spacing:-0.01em;}
-.page-header p{font-size:0.83rem;color:#A07830;margin:4px 0 0;}
-
-.ai-box{background:#FFFEFB;border:1px solid #EAE0C8;border-left:3px solid #C4913A;border-radius:0 10px 10px 0;padding:14px 18px;font-size:0.88rem;line-height:1.75;color:#2C2820;margin:12px 0 20px;}
-
-.risk-card{border-radius:14px;padding:22px 26px;margin-bottom:18px;border:1px solid;}
-.risk-CRITICAL{background:#FEF5F5;border-color:#EDB8B8;}
-.risk-HIGH    {background:#FFFBF2;border-color:#F0D49A;}
-.risk-MEDIUM  {background:#F4F8FF;border-color:#C3D9F5;}
-.risk-LOW     {background:#F2FCF7;border-color:#A8E4C4;}
-
-.exec-card{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:box-shadow 0.15s;}
-.exec-card:hover{box-shadow:0 3px 10px rgba(0,0,0,0.08);}
-.exec-card .label{font-size:0.69rem;font-weight:700;color:#726E66;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
-.exec-card .value{font-size:1.05rem;font-weight:600;color:#1C1F26;}
-
-.sev-CRITICAL{background:#FEF0F0;color:#B42B2B;border:1px solid #EDB8B8;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
-.sev-HIGH    {background:#FFF7E6;color:#9A6200;border:1px solid #F0D49A;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
-.sev-MEDIUM  {background:#EEF4FE;color:#1A5FAD;border:1px solid #C3D9F5;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
-.sev-LOW     {background:#EDFAF4;color:#0F7A56;border:1px solid #A8E4C4;padding:3px 10px;border-radius:20px;font-size:0.74rem;font-weight:700;}
-
-.rec-card{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:12px;padding:18px 22px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-.rec-card h4{font-size:0.92rem;font-weight:600;color:#1C1F26;margin:8px 0 5px;}
-.rec-card p{font-size:0.86rem;color:#4A4640;line-height:1.65;margin:0;}
-
-.stDownloadButton button{background:#1C1F26 !important;color:#F6F4EF !important;border:none !important;font-weight:500 !important;border-radius:8px !important;padding:10px 20px !important;}
-.stDownloadButton button:hover{background:#C4913A !important;}
-.stButton>button[kind="primary"]{background:#1C1F26 !important;color:#F6F4EF !important;border:none !important;border-radius:8px !important;font-weight:500 !important;}
-.stButton>button[kind="primary"]:hover{background:#C4913A !important;}
-.stButton>button:not([kind="primary"]){background:#FFFFFF !important;border:1px solid #E0DDD6 !important;color:#1C1F26 !important;border-radius:8px !important;}
-
-.dim-bar-wrap{margin-bottom:12px;}
-.dim-bar-label{font-size:0.8rem;font-weight:500;color:#2C2820;margin-bottom:5px;display:flex;justify-content:space-between;}
-.dim-bar-track{background:#EAE7E0;border-radius:6px;height:9px;}
-.dim-bar-fill{height:9px;border-radius:6px;}
-
-[data-testid="stDataFrame"]{border:1px solid #F3EFE8;border-radius:10px;overflow:hidden;}
-
-.exec-card:hover,
-.rec-card:hover,
-[data-testid="metric-container"]:hover{
+.risk-card{
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:18px;
+    border:1px solid var(--line);
     background:#FFFFFF;
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
-    transform:translateY(-2px);
-    transition:all .25s ease;
 }
 
-#MainMenu{visibility:hidden;}footer{visibility:hidden;}header{visibility:hidden;}
-[data-testid="stSidebarNav"]{display:none !important;}
-[data-testid="stSidebarNavItems"]{display:none !important;}
-[data-testid="stSidebarNavSeparator"]{display:none !important;}
-[data-testid="stSidebar"] ul{display:none !important;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:#FCFAF6;}
-::-webkit-scrollbar-thumb{background:#DDD8D0;border-radius:10px;}
+.risk-CRITICAL{border-left:5px solid var(--danger);background:#FFF7F7;}
+.risk-HIGH{border-left:5px solid var(--warn);background:#FFFBEB;}
+.risk-MEDIUM{border-left:5px solid var(--accent);background:#EFF6FF;}
+.risk-LOW{border-left:5px solid var(--ok);background:#ECFDF5;}
+
+.sev-CRITICAL,.sev-HIGH,.sev-MEDIUM,.sev-LOW{
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:.74rem;
+    font-weight:800;
+}
+
+.sev-CRITICAL{background:#FEE2E2;color:#991B1B;}
+.sev-HIGH{background:#FEF3C7;color:#92400E;}
+.sev-MEDIUM{background:#DBEAFE;color:#1D4ED8;}
+.sev-LOW{background:#D1FAE5;color:#065F46;}
+
+.stTabs [data-baseweb="tab"]{
+    color:#1F2937;
+    font-weight:700;
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"]{
+    color:var(--brand-dark);
+    border-bottom:3px solid var(--brand);
+}
+
+.stButton>button,
+.stDownloadButton button{
+    border-radius:8px !important;
+    font-weight:700 !important;
+}
+
+.stButton>button[kind="primary"],
+.stDownloadButton button{
+    background:var(--brand) !important;
+    color:#FFFFFF !important;
+    border:none !important;
+}
+
+.stButton>button[kind="primary"]:hover,
+.stDownloadButton button:hover{
+    background:var(--brand-dark) !important;
+}
+
+.stButton>button:not([kind="primary"]){
+    background:#FFFFFF !important;
+    border:1px solid var(--line) !important;
+    color:var(--ink) !important;
+}
+
+.dim-bar-label{
+    color:#1F2937;
+    font-weight:700;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+}
+
+.dim-bar-track{
+    background:#E5EAF1;
+    height:10px;
+    border-radius:999px;
+}
+
+.dim-bar-fill{
+    height:10px;
+    border-radius:999px;
+}
+
+[data-testid="stDataFrame"]{
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+}
+
+#MainMenu,footer,header{
+    visibility:hidden;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -842,3 +954,46 @@ try:
 except Exception as e:
     st.exception(e)
     st.code(traceback.format_exc())
+    
+def page_header(title, description):
+    st.markdown(f"""
+    <div class="page-header">
+        <h2>{title}</h2>
+        <p>{description}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+page_header(
+    "Executive Summary",
+    "A quick overview of total complaints, resolution rate, risk score, top problem areas, and the most urgent action items."
+)
+
+page_header(
+    "Complaint Overview",
+    "Shows the overall complaint volume, category mix, bank-wise distribution, state-wise pattern, and recent complaint trends."
+)
+
+page_header(
+    "Complaint Analytics",
+    "Helps you explore complaint patterns over time, compare categories, find spikes, and understand where issues are growing."
+)
+
+page_header(
+    "Risk Assessment",
+    "Scores complaint risk using volume growth, fraud exposure, unresolved complaints, category spikes, and unusual weekly activity."
+)
+
+page_header(
+    "AI Complaint Intelligence",
+    "Uses complaint narratives to summarize customer pain points, recurring issues, and signals that may need attention."
+)
+
+page_header(
+    "Policy Recommendation Engine",
+    "Turns complaint spikes and risk signals into clear priority levels and recommended follow-up actions."
+)
+
+page_header(
+    "Reports",
+    "Creates downloadable reports and policy briefs with key metrics, risk analysis, AI insights, and recommended actions."
+)

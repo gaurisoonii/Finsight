@@ -963,37 +963,3 @@ def page_header(title, description):
     </div>
     """, unsafe_allow_html=True)
     
-page_header(
-    "Executive Summary",
-    "A quick overview of total complaints, resolution rate, risk score, top problem areas, and the most urgent action items."
-)
-
-page_header(
-    "Complaint Overview",
-    "Shows the overall complaint volume, category mix, bank-wise distribution, state-wise pattern, and recent complaint trends."
-)
-
-page_header(
-    "Complaint Analytics",
-    "Helps you explore complaint patterns over time, compare categories, find spikes, and understand where issues are growing."
-)
-
-page_header(
-    "Risk Assessment",
-    "Scores complaint risk using volume growth, fraud exposure, unresolved complaints, category spikes, and unusual weekly activity."
-)
-
-page_header(
-    "AI Complaint Intelligence",
-    "Uses complaint narratives to summarize customer pain points, recurring issues, and signals that may need attention."
-)
-
-page_header(
-    "Policy Recommendation Engine",
-    "Turns complaint spikes and risk signals into clear priority levels and recommended follow-up actions."
-)
-
-page_header(
-    "Reports",
-    "Creates downloadable reports and policy briefs with key metrics, risk analysis, AI insights, and recommended actions."
-)

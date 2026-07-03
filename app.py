@@ -1,4 +1,3 @@
-
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -25,45 +24,46 @@ boot_db()
 
 # ── Global CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
-            /* ================= PAGE INTRO ================= */
-
-    .page-intro{
-        background:linear-gradient(135deg,#FFFDF9 0%,#F8F4EB 100%);
-        border:1px solid #E6D7B4;
-        border-left:5px solid #C4913A;
-        border-radius:14px;
-        padding:18px 22px;
-        margin:0 0 22px 0;
-        box-shadow:0 4px 14px rgba(0,0,0,.05);
-    }
-
-    .page-intro h4{
-        margin:0 0 10px 0;
-        font-size:1rem;
-        color:#1C1F26;
-        font-weight:700;
-    }
-
-    .page-intro p{
-        margin:0;
-        font-size:0.88rem;
-        line-height:1.8;
-        color:#4E4A44;
-    }
-
-    .page-intro ul{
-        margin-top:10px;
-        padding-left:18px;
-    }
-
-    .page-intro li{
-        margin-bottom:5px;
-        color:#5A5550;
-    }
-    <style>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap');
 
-html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#FFFCF8;}
+/* ================= PAGE INTRO ================= */
+
+.page-intro{
+    background:linear-gradient(135deg,#FFFDF9 0%,#F8F4EB 100%);
+    border:1px solid #E6D7B4;
+    border-left:5px solid #C4913A;
+    border-radius:14px;
+    padding:18px 22px;
+    margin:0 0 22px 0;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.page-intro h4{
+    margin:0 0 10px 0;
+    font-size:1rem;
+    color:#1C1F26;
+    font-weight:700;
+}
+
+.page-intro p{
+    margin:0;
+    font-size:0.88rem;
+    line-height:1.8;
+    color:#4E4A44;
+}
+
+.page-intro ul{
+    margin-top:10px;
+    padding-left:18px;
+}
+
+.page-intro li{
+    margin-bottom:5px;
+    color:#5A5550;
+}
+
+html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif;background:#FFFCF8;}
 
 [data-testid="stSidebar"]{background:linear-gradient(175deg,#1C1F26 0%,#252932 100%) !important;border-right:1px solid #2E3340;}
 [data-testid="stSidebar"] *{color:#F4F1EA!important;}
@@ -76,7 +76,7 @@ html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#
 .main .block-container{padding-top:28px;}
 
 [data-testid="metric-container"]{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-[data-testid="metric-container"] label{font-size:0.71rem !important;font-weight:600;color:#726E66; !important;letter-spacing:0.08em;text-transform:uppercase;}
+[data-testid="metric-container"] label{font-size:0.71rem !important;font-weight:600;color:#726E66 !important;letter-spacing:0.08em;text-transform:uppercase;}
 [data-testid="metric-container"] [data-testid="stMetricValue"]{font-size:1.75rem !important;font-weight:700;color:#1C1F26 !important;font-family:'DM Serif Display',serif;}
 [data-testid="stMetricDelta"]{font-size:0.82rem !important;}
 
@@ -86,10 +86,10 @@ html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#
 .stTabs [data-baseweb="tab-panel"]{padding-top:20px;}
 
 .page-header{padding:0 0 14px;border-bottom:1px solid #F2EEE7;margin-bottom:24px;}
-.page-header h2{font-size:1.45rem;font-weight:600;#C4913A;margin:0;font-family:'DM Serif Display',serif;letter-spacing:-0.01em;}
+.page-header h2{font-size:1.45rem;font-weight:600;color:#C4913A;margin:0;font-family:'DM Serif Display',serif;letter-spacing:-0.01em;}
 .page-header p{font-size:0.83rem;color:#A07830;margin:4px 0 0;}
 
-.ai-box{background:#FFFEFB;;border:1px solid #EAE0C8;border-left:3px solid #C4913A;border-radius:0 10px 10px 0;padding:14px 18px;font-size:0.88rem;line-height:1.75;color:#2C2820;margin:12px 0 20px;}
+.ai-box{background:#FFFEFB;border:1px solid #EAE0C8;border-left:3px solid #C4913A;border-radius:0 10px 10px 0;padding:14px 18px;font-size:0.88rem;line-height:1.75;color:#2C2820;margin:12px 0 20px;}
 
 .risk-card{border-radius:14px;padding:22px 26px;margin-bottom:18px;border:1px solid;}
 .risk-CRITICAL{background:#FEF5F5;border-color:#EDB8B8;}
@@ -97,7 +97,7 @@ html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#
 .risk-MEDIUM  {background:#F4F8FF;border-color:#C3D9F5;}
 .risk-LOW     {background:#F2FCF7;border-color:#A8E4C4;}
 
-.exec-card{background:#FFFEFC;;border:1px solid #F3EFE8;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:box-shadow 0.15s;}
+.exec-card{background:#FFFEFC;border:1px solid #F3EFE8;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:box-shadow 0.15s;}
 .exec-card:hover{box-shadow:0 3px 10px rgba(0,0,0,0.08);}
 .exec-card .label{font-size:0.69rem;font-weight:700;color:#726E66;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
 .exec-card .value{font-size:1.05rem;font-weight:600;color:#1C1F26;}
@@ -132,8 +132,8 @@ html,body,[class*="css"]{font-family:'DM Sans',system-ui,sans-serif,background:#
     transform:translateY(-2px);
     transition:all .25s ease;
 }
-# 
-# Menu{visibility:hidden;}footer{visibility:hidden;}header{visibility:hidden;}
+
+#MainMenu{visibility:hidden;}footer{visibility:hidden;}header{visibility:hidden;}
 [data-testid="stSidebarNav"]{display:none !important;}
 [data-testid="stSidebarNavItems"]{display:none !important;}
 [data-testid="stSidebarNavSeparator"]{display:none !important;}

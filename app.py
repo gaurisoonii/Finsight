@@ -270,15 +270,6 @@ with st.sidebar:
                     color:#C4913A;">
             🏛 FinSight
         </div>
-
-        <div style="font-size:.78rem;
-                    color:#D7DCE6;
-                    line-height:1.5;
-                    margin-top:6px;">
-            AI-Driven Financial Complaint<br>
-            Intelligence Platform
-        </div>
-    </div>
     """, unsafe_allow_html=True)
     
     st.markdown("<div style='font-size:0.68rem;font-weight:700;color:#CDD3DF;"

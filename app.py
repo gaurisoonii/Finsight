@@ -33,7 +33,7 @@ st.markdown("""
 
     --ink:#0F172A;
     --text:#334155;
-    --soft:#64748B;
+    --soft:#475569;
 
     --line:#E2E8F0;
 
@@ -42,6 +42,7 @@ st.markdown("""
     --brand-light:#ECFDF5;
 
     --accent:#2563EB;
+    --gold:#C4913A;
 
     --danger:#DC2626;
     --warn:#D97706;
@@ -290,7 +291,7 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("<div style='font-size:0.68rem;font-weight:700;color:#CDD3DF;"
+    st.markdown("<div style='font-size:0.68rem;font-weight:700;color:#C4913A;"
                 "letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;'>"
                 "Navigation</div>", unsafe_allow_html=True)
 
@@ -334,10 +335,10 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("""
-    <div style="font-size:0.72rem;color:#D3D8E2;line-height:2;">
-        <b style="color:#BFC6D4;">Data</b> · CFPB remapped to India<br>
-        <b style="color:#5A6070;">AI</b>   · GPT-4o mini / fallback<br>
-        <b style="color:#5A6070;">Stack</b> · Python · Pandas · Plotly
+    <div style="font-size:0.72rem;color:#334155;line-height:2;">
+        <b style="color:#C4913A;">Data</b> · CFPB remapped to India<br>
+        <b style="color:#C4913A;">AI</b>   · GPT-4o mini / fallback<br>
+        <b style="color:#C4913A;">Stack</b> · Python · Pandas · Plotly
     </div>""", unsafe_allow_html=True)
 
 filters = {}
@@ -414,12 +415,12 @@ def page_executive_summary():
                 <div style="font-size:1.1rem;font-weight:700;color:{gc};margin-bottom:4px;">
                     {SEV_ICON.get(grade,'')} {grade} RISK — {datetime.now().strftime('%B %Y')}
                 </div>
-                <div style="font-size:0.88rem;color:#3D3D3A;line-height:1.6;">
+                <div style="font-size:0.88rem;color:#1F2937;line-height:1.6;">
                     {risk['interpretation']}
                 </div>
             </div>
             <div style="text-align:right;min-width:100px;">
-                <div style="font-size:0.72rem;color:#5F5E5A;font-weight:600;text-transform:uppercase;">Active flags</div>
+                <div style="font-size:0.72rem;color:#334155;font-weight:600;text-transform:uppercase;">Active flags</div>
                 <div style="font-size:2rem;font-weight:700;color:{gc};">{len(recs)}</div>
             </div>
         </div>
@@ -593,7 +594,7 @@ def page_analytics():
         st.dataframe(d, use_container_width=True, hide_index=True)
 
     with tab3:
-        st.markdown("""<p style="font-size:0.85rem;color:#5F5E5A;">
+        st.markdown("""<p style="font-size:0.85rem;color:#334155;">
             Anomalies flagged when weekly volume deviates &gt;2σ from 4-week rolling mean.</p>""",
             unsafe_allow_html=True)
         anomaly_df = analytics.detect_anomalies(filters)
@@ -645,7 +646,7 @@ def page_risk():
             <div style="font-size:2.8rem;font-weight:700;color:{gc};line-height:1;">
                 {SEV_ICON.get(grade,'')} {grade}
             </div>
-            <div style="font-size:0.88rem;color:#3D3D3A;margin-top:10px;line-height:1.6;">
+            <div style="font-size:0.88rem;color:#1F2937;margin-top:10px;line-height:1.6;">
                 {risk['interpretation']}
             </div>
         </div>""", unsafe_allow_html=True)
@@ -656,7 +657,7 @@ def page_risk():
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("**Dimension breakdown**")
-    st.markdown("""<p style="font-size:0.83rem;color:#5F5E5A;margin-bottom:14px;">
+    st.markdown("""<p style="font-size:0.83rem;color:#334155;margin-bottom:14px;">
     Each dimension is scored 0–100 and weighted to produce the composite score.
     Higher = higher risk.</p>""", unsafe_allow_html=True)
 
@@ -672,7 +673,7 @@ def page_risk():
         with col_b:
             st.markdown(f"""
             <div style="text-align:right;padding-top:4px;">
-                <span style="font-size:0.75rem;color:#5F5E5A;">Weight: <b>{d['weight']}</b></span>
+                <span style="font-size:0.75rem;color:#334155;">Weight: <b>{d['weight']}</b></span>
             </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
@@ -719,7 +720,7 @@ def page_ai_insights():
     with col_info:
         st.markdown(f"""
         <div style="background:#F0FAF6;border-radius:8px;padding:14px 18px;margin-top:4px;">
-            <div style="font-size:0.75rem;color:#5F5E5A;text-transform:uppercase;
+            <div style="font-size:0.75rem;color:#334155;text-transform:uppercase;
                  font-weight:600;letter-spacing:0.05em;">Selected</div>
             <div style="font-size:1.35rem;font-weight:600;color:#1A2B4A;margin-top:4px;">
                 {selected_cat}</div>
@@ -736,16 +737,16 @@ def page_ai_insights():
         with st.expander(f"Raw narrative samples ({min(5,len(narratives))})"):
             for i,text in enumerate(narratives[:5],1):
                 st.markdown(f"""
-                <div style="background:#FAFAF8;border:0.5px solid #D3D1C7;border-radius:8px;
+                <div style="background:#FAFAFA;border:0.5px solid #CBD5E1;border-radius:8px;
                     padding:12px 16px;margin-bottom:10px;font-size:0.86rem;
-                    color:#3D3D3A;line-height:1.65;">
-                    <span style="font-size:0.74rem;font-weight:600;color:#5F5E5A;">#{i}</span><br>
+                    color:#1F2937;line-height:1.65;">
+                    <span style="font-size:0.74rem;font-weight:600;color:#334155;">#{i}</span><br>
                     {str(text)[:600]}{'…' if len(str(text))>600 else ''}
                 </div>""", unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="text-align:center;padding:48px 20px;color:#8A8980;font-size:0.9rem;
-             border:1px dashed #D3D1C7;border-radius:10px;margin-top:8px;">
+        <div style="text-align:center;padding:48px 20px;color:#475569;font-size:0.9rem;
+             border:1px dashed #CBD5E1;border-radius:10px;margin-top:8px;">
             Select a category and click <strong>Generate AI Analysis</strong>
         </div>""", unsafe_allow_html=True)
 
@@ -854,11 +855,11 @@ def page_reports():
             include_policy = st.checkbox("Include policy section", value=True, key="full_pol")
         with col_r:
             st.markdown("""
-            <div style="background:#F8F7F2;border:0.5px solid #D3D1C7;
+            <div style="background:#F8FAFC;border:0.5px solid #CBD5E1;
                  border-radius:10px;padding:18px 22px;">
                 <div style="font-size:0.85rem;font-weight:600;color:#1A2B4A;margin-bottom:10px;">
                     Full report includes</div>
-                <ul style="font-size:0.85rem;color:#3D3D3A;line-height:2.1;
+                <ul style="font-size:0.85rem;color:#1F2937;line-height:2.1;
                     padding-left:18px;margin:0;">
                     <li>Executive summary KPI table</li>
                     <li>Category breakdown (top 10)</li>
@@ -902,7 +903,7 @@ def page_reports():
                  border-radius:10px;padding:18px 22px;">
                 <div style="font-size:0.85rem;font-weight:600;color:#1A2B4A;margin-bottom:10px;">
                     Policy Brief includes (2 pages)</div>
-                <ul style="font-size:0.85rem;color:#3D3D3A;line-height:2.1;
+                <ul style="font-size:0.85rem;color:#1F2937;line-height:2.1;
                     padding-left:18px;margin:0;">
                     <li>Composite risk score (0–100) with grade</li>
                     <li>5-dimension risk breakdown table</li>

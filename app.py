@@ -286,8 +286,7 @@ with st.sidebar:
         <div style="font-size:1.55rem;
                     font-weight:700;
                     color:#C4913A;">
-            🏛 FinSight
-            Financial Complaint Intelligence Platform
+            🏛 FinSight (Financial Complaint Intelligence Platform)
         </div>
     """, unsafe_allow_html=True)
     
@@ -310,7 +309,7 @@ with st.sidebar:
 )
 
     st.markdown("---")
-    st.markdown("<div style='font-size:0.7rem;font-weight:700;color:#A8C0E6;"
+    st.markdown("<div style='font-size:0.7rem;font-weight:700;color:#C4913A;"
                 "letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;'>"
                 "Filters</div>", unsafe_allow_html=True)
 

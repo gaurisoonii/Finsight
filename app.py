@@ -404,17 +404,7 @@ def _dim_bar(name, score, raw, color="#0F6E56"):
 def page_executive_summary():
     st.markdown("""
     <div class="page-header">
-        <h2>──────────────────────────────
-
-        Executive Dashboard
-
-        Financial Complaint Intelligence
-
-        Reporting Period
-
-        July 2026
-
-──────────────────────────────</h2>
+        <h2>🏠 Executive Summary</h2>
         <p>
             This page provides a consolidated view of the current complaint landscape,
             highlighting key performance indicators, overall risk exposure, and the

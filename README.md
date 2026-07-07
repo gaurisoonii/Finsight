@@ -24,8 +24,8 @@
 ### 1. Clone and setup
 
 ```bash
-git clone https://github.com/yourusername/ccid.git
-cd ccid
+git clone https://github.com/gaurisoonii/Finsight.git
+cd Finsight
 
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate

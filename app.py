@@ -28,18 +28,26 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-    --bg:#FAFBFC;
+    --bg:#F8FAFC;
     --surface:#FFFFFF;
-    --ink:#111827;
-    --text:#1F2937;
-    --soft:#243B53;
-    --line:#D8DEE8;
+
+    --ink:#0F172A;
+    --text:#334155;
+    --soft:#64748B;
+
+    --line:#E2E8F0;
+
     --brand:#0F766E;
-    --brand-dark:#0B4F4A;
+    --brand-dark:#115E59;
+    --brand-light:#ECFDF5;
+
     --accent:#2563EB;
-    --danger:#B42318;
-    --warn:#B45309;
-    --ok:#047857;
+
+    --danger:#DC2626;
+    --warn:#D97706;
+    --ok:#16A34A;
+
+    --shadow:0 6px 18px rgba(15,23,42,.08);
 }
 
 html,body,[class*="css"]{
@@ -109,7 +117,8 @@ h1,h2,h3,h4,h5,h6,p,span,div,label{
     border:1px solid var(--line);
     border-radius:10px;
     padding:15px 18px;
-    box-shadow:0 1px 5px rgba(15,23,42,.06);
+    box-shadow:var(--shadow);
+    transition:.25s ease;
 }
 
 [data-testid="metric-container"] label{
@@ -253,6 +262,15 @@ h1,h2,h3,h4,h5,h6,p,span,div,label{
 #MainMenu,footer,header{
     visibility:hidden;
 }
+
+.exec-card:hover,
+.rec-card:hover,
+.ai-box:hover,
+[data-testid="metric-container"]:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 24px rgba(15,23,42,.12);
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -269,6 +287,8 @@ with st.sidebar:
                     font-weight:700;
                     color:#C4913A;">
             🏛 FinSight
+
+            Financial Complaint Intelligence Platform
         </div>
     """, unsafe_allow_html=True)
     

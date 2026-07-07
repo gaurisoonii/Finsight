@@ -1,117 +1,239 @@
 # FinSight
-AI-Powered Financial Complaint Intelligence Platform
+### AI-Powered Financial Complaint Intelligence & Regulatory Analytics Platform
 
-> An AI-powered analytics platform that analyses banking and digital payment complaints,
-> identifies emerging issues, generates dashboards, and produces policy recommendations.
-> Built to demonstrate skills directly aligned with the RBI Data Analytics & Policy Research role.
+FinSight is an AI-powered analytics platform designed to transform large-scale financial consumer complaints into actionable regulatory intelligence. It combines statistical analytics, anomaly detection, interactive visualizations, and LLM-assisted insights to help regulators and financial institutions identify emerging risks, monitor complaint trends, and generate evidence-based policy recommendations.
 
----
-
-## Features
-
-| Module | What it does |
-|--------|-------------|
-| **Data Cleaning** | Deduplicates, normalises categories, remaps states/banks |
-| **Analytics Engine** | KPIs, trend analysis, category/bank breakdowns |
-| **Anomaly Detector** | Z-score based weekly spike detection |
-| **AI Summariser** | GPT-4o narrative summary of complaint batches |
-| **Policy Engine** | Rule + LLM hybrid regulatory recommendations |
-| **PDF Generator** | One-click RBI-style monthly report |
+Developed as a portfolio project inspired by real-world financial supervision and consumer protection workflows, FinSight demonstrates practical applications of AI, data analytics, and modern software engineering.
 
 ---
 
-## Quickstart
+## Key Features
 
-### 1. Clone and setup
+| Module | Capability |
+|---------|------------|
+| **Data Processing Pipeline** | Cleans, validates, deduplicates, and standardizes complaint records while remapping categories, banks, and regions into a consistent analytical format. |
+| **Interactive Analytics Dashboard** | Presents complaint trends, KPIs, category distributions, bank-wise analysis, and geographic insights using interactive Plotly visualizations. |
+| **Anomaly Detection Engine** | Identifies statistically significant complaint spikes using Z-score analysis to surface unusual patterns requiring investigation. |
+| **AI Insight Generator** | Uses GPT-4o to convert analytical findings into concise executive summaries suitable for management and regulatory review. |
+| **Policy Recommendation Engine** | Combines deterministic business rules with LLM reasoning to generate explainable regulatory recommendations and risk prioritization. |
+| **Automated Report Generator** | Produces professional RBI-style PDF reports containing analytics, charts, AI summaries, and policy recommendations. |
+| **Synthetic Data Generator** | Automatically generates realistic complaint datasets for demonstration when external datasets are unavailable. |
+
+---
+
+# System Architecture
+
+```
+Complaint Dataset
+        │
+        ▼
+Data Cleaning & Validation
+        │
+        ▼
+Feature Engineering
+        │
+        ▼
+Statistical Analytics
+        │
+        ├──────────────┐
+        ▼              ▼
+Interactive Charts   Anomaly Detection
+        │              │
+        └──────┬───────┘
+               ▼
+      AI Insight Generator
+               │
+               ▼
+ Policy Recommendation Engine
+               │
+               ▼
+      Executive PDF Reports
+```
+
+---
+
+# Technology Stack
+
+### Programming
+
+- Python 3.11+
+
+### Data Engineering
+
+- Pandas
+- NumPy
+- SQLite
+- SQLAlchemy
+
+### Artificial Intelligence
+
+- OpenAI GPT-4o Mini
+- Prompt Engineering
+- Rule-Based Decision System
+
+### Data Analytics
+
+- SciPy
+- Statistical Analysis
+- Z-score Anomaly Detection
+
+### Visualization
+
+- Plotly
+- Streamlit
+
+### Reporting
+
+- ReportLab
+
+### Deployment
+
+- Streamlit Cloud
+
+---
+
+# Project Structure
+
+```
+FinSight/
+│
+├── app.py
+├── requirements.txt
+├── .env.example
+├── README.md
+│
+├── data/
+│   ├── complaints.csv
+│   └── complaints.db
+│
+├── modules/
+│   ├── cleaner.py
+│   ├── analytics.py
+│   ├── ai_engine.py
+│   ├── charts.py
+│   └── report_generator.py
+│
+└── assets/
+```
+
+---
+
+# Getting Started
+
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/gaurisoonii/Finsight.git
 cd Finsight
+```
 
+## 2. Create Virtual Environment
+
+```bash
 python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+```
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+## 3. Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configure environment
+## 4. Configure Environment
+
+Copy the sample environment file.
 
 ```bash
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY (optional — works without it)
 ```
 
-### 3. Add data (optional)
+Add your OpenAI API key if AI summaries are required.
 
-Download the CFPB Consumer Complaints dataset from:
+The application remains fully functional without an API key by automatically using deterministic fallback summaries.
+
+---
+
+## 5. Dataset
+
+The application supports the CFPB Consumer Complaint Dataset.
+
+Download from:
+
 https://www.consumerfinance.gov/data-research/consumer-complaints/
 
-Place it at `data/complaints.csv`. If absent, the app auto-generates
-50,000 synthetic records that mirror the real dataset structure.
+Place the CSV file inside
 
-### 4. Run
+```
+data/complaints.csv
+```
+
+If no dataset is provided, FinSight automatically generates a synthetic dataset containing over **50,000 complaint records** that replicate the structure and distribution of real financial complaint data for demonstration purposes.
+
+---
+
+## 6. Launch
 
 ```bash
 streamlit run app.py
 ```
 
-Visit http://localhost:8501
-
----
-
-## Project Structure
+Application URL
 
 ```
-ccid/
-├── app.py                  ← Entry point, sidebar, routing, all pages inlined
-├── requirements.txt
-├── .env.example
-├── data/
-│   ├── complaints.csv      ← Place CFPB CSV here (optional)
-│   └── complaints.db       ← Auto-generated SQLite database
-└── modules/
-    ├── cleaner.py          ← Data cleaning pipeline
-    ├── analytics.py        ← KPIs, trends, anomalies, risk scoring, policy rules
-    ├── ai_engine.py        ← OpenAI integration
-    ├── charts.py           ← Plotly figure factories
-    └── report_generator.py ← ReportLab PDF builder
+http://localhost:8501
 ```
 
-> Note: this app is a single Streamlit script (`app.py`) with every page function
-> defined and routed inline via a sidebar radio control. There is intentionally
-> **no `pages/` folder** — Streamlit auto-generates its own multi-page navigation
-> from any `pages/` directory it finds, which would conflict with and shadow the
-> app's own sidebar routing. If you ever see a duplicate page list above the
-> "NAVIGATION" section in the sidebar, it means a `pages/` folder was re-added —
-> delete it.
+---
+
+# Design Decisions
+
+### Why GPT is used
+
+The LLM is responsible only for transforming structured analytical results into executive-level summaries and policy recommendations.
+
+All numerical computations—including KPIs, anomaly detection, trend analysis, and statistical calculations—are performed deterministically within the analytics engine to ensure consistency and reproducibility.
+
+This hybrid architecture minimizes hallucinations while improving the readability of analytical reports.
 
 ---
 
-## Tech Stack
+# Dataset Adaptation
 
-- **Python 3.11+**
-- **Pandas / NumPy** — Data manipulation
-- **SQLite / SQLAlchemy** — Storage layer
-- **Plotly** — Interactive charts
-- **Streamlit** — UI framework
-- **OpenAI GPT-4o mini** — AI summaries and policy insights
-- **SciPy** — Z-score anomaly detection
-- **ReportLab** — PDF report generation
+The CFPB dataset contains U.S. banks and state identifiers.
+
+To better simulate an RBI-oriented environment, the preprocessing pipeline deterministically maps these entities to representative Indian banks and states.
+
+This adaptation is fully documented in the preprocessing pipeline and disclosed within generated reports to maintain transparency.
 
 ---
 
-## Note on dataset remapping
+# Future Enhancements
 
-The CFPB dataset uses US state codes and US bank names. CCID applies
-a deterministic remapping to Indian states and Indian banks to simulate
-a realistic RBI-facing dataset. This is documented in `modules/cleaner.py`
-and disclosed in the report footer. Interview note: be upfront about this
-— it's actually a strength, showing awareness of real data constraints.
+- Retrieval-Augmented Generation (RAG) using RBI circulars
+- Semantic search over historical complaints
+- PostgreSQL backend
+- Docker containerization
+- Authentication and role-based access control
+- REST API
+- Real-time complaint ingestion
+- ML-based complaint classification
+- Model evaluation dashboard
+- CI/CD with GitHub Actions
 
 ---
 
-## Resume bullet
+# Resume Highlight
 
-> Developed an AI-powered Consumer Complaint Intelligence Dashboard using
-> Python, SQL, Streamlit, and GPT-4o to analyse 100,000+ financial complaints —
-> featuring anomaly detection, category trend analysis, and a policy recommendation
-> engine that flags regulatory action items with severity scoring.
+> Developed **FinSight**, an AI-powered Financial Complaint Intelligence Platform using Python, Streamlit, SQLite, Plotly, SciPy, and GPT-4o to analyze 100,000+ financial complaint records, detect anomalies, generate executive summaries, and produce explainable policy recommendations through a hybrid analytics and LLM pipeline.

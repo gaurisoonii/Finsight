@@ -113,6 +113,35 @@ h1,h2,h3,h4,h5,h6,p,span,div,label{
     border-color:#99F6E4;
 }
 
+/* Sidebar input widgets (date range, multiselects) render on a dark
+   internal background — force light text/icons so they're readable */
+[data-testid="stSidebar"] [data-baseweb="select"] *,
+[data-testid="stSidebar"] [data-baseweb="input"] input,
+[data-testid="stSidebar"] [data-baseweb="datepicker"] input,
+[data-testid="stSidebar"] input{
+    color:#F8FAFC !important;
+}
+
+[data-testid="stSidebar"] [data-baseweb="select"] svg,
+[data-testid="stSidebar"] [data-baseweb="input"] svg,
+[data-testid="stSidebar"] svg{
+    fill:#F8FAFC !important;
+}
+
+[data-testid="stSidebar"] [data-baseweb="select"] input::placeholder,
+[data-testid="stSidebar"] input::placeholder{
+    color:#CBD5E1 !important;
+    opacity:1 !important;
+}
+
+[data-testid="stSidebar"] [data-baseweb="tag"]{
+    background:#334155 !important;
+}
+
+[data-testid="stSidebar"] [data-baseweb="tag"] *{
+    color:#F8FAFC !important;
+}
+
 [data-testid="metric-container"]{
     background:var(--surface);
     border:1px solid var(--line);

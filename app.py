@@ -287,7 +287,6 @@ with st.sidebar:
                     font-weight:700;
                     color:#C4913A;">
             🏛 FinSight
-
             Financial Complaint Intelligence Platform
         </div>
     """, unsafe_allow_html=True)

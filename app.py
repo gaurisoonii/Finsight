@@ -374,7 +374,17 @@ def _dim_bar(name, score, raw, color="#0F6E56"):
 def page_executive_summary():
     st.markdown("""
     <div class="page-header">
-        <h2>🏠 Executive Summary</h2>
+        <h2>──────────────────────────────
+
+        Executive Dashboard
+
+        Financial Complaint Intelligence
+
+        Reporting Period
+
+        July 2026
+
+──────────────────────────────</h2>
         <p>
             This page provides a consolidated view of the current complaint landscape,
             highlighting key performance indicators, overall risk exposure, and the
@@ -718,7 +728,7 @@ def page_ai_insights():
         </div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Generate AI Analysis", type="primary"):
+    if st.button("Generate Executive AI Insight", type="primary"):
         with st.spinner("Generating analysis …"):
             narratives = analytics.narrative_sample(selected_cat, n=20, filters=filters)
             summary    = ai_engine.summarise_complaints(narratives, selected_cat)
@@ -860,7 +870,7 @@ def page_reports():
             </div>""", unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("⬇️  Generate Full Report", type="primary", key="gen_full"):
+        if st.button("⬇️  Generate Monthly Intelligence Report", type="primary", key="gen_full"):
             with st.spinner("Compiling …"):
                 kpi_data = analytics.kpis(filters)
                 cat_df   = analytics.category_breakdown(filters)
@@ -972,3 +982,4 @@ def page_header(title, description):
     </div>
     """, unsafe_allow_html=True)
     
+print ("FinSight v1.0 \n Developed for Financial Complaint Analytics \n© 2026 Gauri Soni")

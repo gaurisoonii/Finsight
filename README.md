@@ -1,4 +1,5 @@
-# Consumer Complaint Intelligence Dashboard (CCID)
+# FinSight
+AI-Powered Financial Complaint Intelligence Platform
 
 > An AI-powered analytics platform that analyses banking and digital payment complaints,
 > identifies emerging issues, generates dashboards, and produces policy recommendations.
